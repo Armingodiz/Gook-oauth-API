@@ -7,7 +7,8 @@ import (
 )
 
 type AccessTokenHandler interface {
-	GetById(ctx *gin.Context)
+	GetById(*gin.Context)
+	Create(*gin.Context)
 }
 type accessTokenHandler struct {
 	service access_token.Service
