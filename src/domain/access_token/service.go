@@ -25,12 +25,12 @@ func NewService(repo Repository) Service {
 	}
 }
 
-func (s *service) GetById(id string) (*AccessToken, *errors.RestErr) {
-	id = strings.TrimSpace(id)
-	if len(id) == 0 {
+func (s *service) GetById(accessTokenID string) (*AccessToken, *errors.RestErr) {
+	accessTokenID = strings.TrimSpace(accessTokenID)
+	if len(accessTokenID) == 0 {
 		return nil, errors.NewBadRequestError("INVALID Access Token ID !")
 	}
-	accessToken, err := s.repository.GetById(id)
+	accessToken, err := s.repository.GetById(accessTokenID)
 	if err != nil {
 		return nil, err
 	}

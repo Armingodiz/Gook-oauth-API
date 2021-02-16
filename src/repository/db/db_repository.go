@@ -7,7 +7,6 @@ import (
 	"github.com/ArminGodiz/Gook-oauth-API/src/clients/redis_db"
 	"github.com/ArminGodiz/Gook-oauth-API/src/domain/access_token"
 	"github.com/ArminGodiz/Gook-oauth-API/src/utils/errors"
-	"strconv"
 )
 
 type DbRepository interface {
@@ -23,8 +22,8 @@ func NewRepository() DbRepository {
 	return &dbRepository{}
 }
 
-func (db *dbRepository) GetById(id string) (*access_token.AccessToken, *errors.RestErr) {
-	at, err := redis_db.DB.HGet(context.Background(), "tokens", id).Result()
+func (db *dbRepository) GetById(accessTokenID string) (*access_token.AccessToken, *errors.RestErr) {
+	at, err := redis_db.DB.HGet(context.Background(), "tokens", accessTokenID).Result()
 	if err != nil {
 		return nil, errors.NewInternalServerError("no access token found !")
 	}
@@ -38,7 +37,7 @@ func (db *dbRepository) Create(at access_token.AccessToken) *errors.RestErr {
 	if err != nil {
 		return errors.NewBadRequestError("invalid form")
 	}
-	err = redis_db.DB.HSet(context.Background(), "tokens", at.UserID, json1).Err()
+	err = redis_db.DB.HSet(context.Background(), "tokens", at.AccessToken, json1).Err()
 	if err != nil {
 		return errors.NewInternalServerError("error while saving in db")
 	}
@@ -46,8 +45,7 @@ func (db *dbRepository) Create(at access_token.AccessToken) *errors.RestErr {
 }
 
 func (db *dbRepository) UpdateExpirationTime(at access_token.AccessToken) *errors.RestErr {
-	userID := strconv.Itoa(int(at.UserID))
-	_ = redis_db.DB.HDel(context.Background(), "tokens", userID)
+	_ = redis_db.DB.HDel(context.Background(), "tokens", at.AccessToken)
 	db.Create(at)
 	return nil
 }
