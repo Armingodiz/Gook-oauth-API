@@ -4,7 +4,6 @@ import (
 	"github.com/ArminGodiz/Gook-oauth-API/src/domain/access_token"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strings"
 )
 
 type AccessTokenHandler interface {
@@ -21,7 +20,7 @@ func NewHandler(service access_token.Service) AccessTokenHandler {
 }
 
 func (ath *accessTokenHandler) GetById(c *gin.Context) {
-	accessTokenId := strings.TrimSpace(c.Param("access_token_id"))
+	accessTokenId := c.Param("access_token_id")
 	accessToken, err := ath.service.GetById(accessTokenId)
 	if err != nil {
 		c.JSON(err.Code, err)

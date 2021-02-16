@@ -2,6 +2,7 @@ package access_token
 
 import (
 	"github.com/ArminGodiz/Gook-oauth-API/src/utils/errors"
+	"strings"
 )
 
 type Repository interface {
@@ -21,6 +22,10 @@ func NewService(repo Repository) Service {
 }
 
 func (s *service) GetById(id string) (*AccessToken, *errors.RestErr) {
+	id = strings.TrimSpace(id)
+	if len(id) == 0 {
+		return nil, errors.NewBadRequestError("INVALID Access Token ID !")
+	}
 	accessToken, err := s.repository.GetById(id)
 	if err != nil {
 		return nil, err
