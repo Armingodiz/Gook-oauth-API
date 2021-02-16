@@ -37,9 +37,4 @@ func (s *service) GetById(id string) (*AccessToken, *errors.RestErr) {
 	return accessToken, nil
 }
 
-func (s *service) Create(at AccessToken) *errors.RestErr {
-	return nil
-}
-func (s *service) UpdateExpirationTime(at AccessToken) *errors.RestErr {
-	return nil
-}
+

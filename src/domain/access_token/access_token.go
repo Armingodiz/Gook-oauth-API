@@ -2,6 +2,8 @@ package access_token
 
 import (
 	"fmt"
+	"github.com/ArminGodiz/Gook-oauth-API/src/utils/errors"
+	"strings"
 	"time"
 )
 
@@ -14,6 +16,20 @@ type AccessToken struct {
 	UserID      int64  `json:"user_id"`
 	ClientId    int64  `json:"client_id"`
 	Expires     int64  `json:"expires"`
+}
+
+func (at *AccessToken) Validate() *errors.RestErr {
+	at.AccessToken = strings.TrimSpace(at.AccessToken)
+	if at.AccessToken == "" {
+		return errors.NewBadRequestError("invalid access token")
+	} else if at.ClientId <= 0 {
+		return errors.NewBadRequestError("invalid client id")
+	} else if at.UserID <= 0 {
+		return errors.NewBadRequestError("invalid user id")
+	} else if at.Expires <= 0 {
+		return errors.NewBadRequestError("invalid expires")
+	}
+	return nil
 }
 
 func GetNewAccessToken() AccessToken {
