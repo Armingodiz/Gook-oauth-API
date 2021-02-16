@@ -28,3 +28,18 @@ func (ath *accessTokenHandler) GetById(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, accessToken)
 }
+
+func (ath *accessTokenHandler) Create(c *gin.Context) {
+	var at access_token.AccessToken
+	err := c.ShouldBindJSON(&at)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+	err2 := ath.service.Create(at)
+	if err2 != nil {
+		c.JSON(err2.Code, err2)
+		return
+	}
+	c.JSON(http.StatusCreated, at)
+}
