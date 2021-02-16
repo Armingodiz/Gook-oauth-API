@@ -7,10 +7,13 @@ import (
 	"github.com/ArminGodiz/Gook-oauth-API/src/clients/redis_db"
 	"github.com/ArminGodiz/Gook-oauth-API/src/domain/access_token"
 	"github.com/ArminGodiz/Gook-oauth-API/src/utils/errors"
+	"strconv"
 )
 
 type DbRepository interface {
 	GetById(string) (*access_token.AccessToken, *errors.RestErr)
+	Create(access_token.AccessToken) *errors.RestErr
+	UpdateExpirationTime(access_token.AccessToken) *errors.RestErr
 }
 
 type dbRepository struct {
@@ -23,11 +26,28 @@ func NewRepository() DbRepository {
 func (db *dbRepository) GetById(id string) (*access_token.AccessToken, *errors.RestErr) {
 	at, err := redis_db.DB.HGet(context.Background(), "tokens", id).Result()
 	if err != nil {
-		//fmt.Println(err)
-		return nil, errors.NewInternalServerError("Error in db")
+		return nil, errors.NewInternalServerError("no access token found !")
 	}
 	fmt.Println(at)
 	var accessToken access_token.AccessToken
 	json.Unmarshal([]byte(at), &accessToken)
 	return &accessToken, nil
+}
+func (db *dbRepository) Create(at access_token.AccessToken) *errors.RestErr {
+	json1, err := json.Marshal(at)
+	if err != nil {
+		return errors.NewBadRequestError("invalid form")
+	}
+	err = redis_db.DB.HSet(context.Background(), "tokens", at.UserID, json1).Err()
+	if err != nil {
+		return errors.NewInternalServerError("error while saving in db")
+	}
+	return nil
+}
+
+func (db *dbRepository) UpdateExpirationTime(at access_token.AccessToken) *errors.RestErr {
+	userID := strconv.Itoa(int(at.UserID))
+	_ = redis_db.DB.HDel(context.Background(), "tokens", userID)
+	db.Create(at)
+	return nil
 }
