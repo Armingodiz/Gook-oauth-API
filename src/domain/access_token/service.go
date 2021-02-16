@@ -38,3 +38,10 @@ func (s *service) GetById(id string) (*AccessToken, *errors.RestErr) {
 }
 
 
+func (s *service) Create(at AccessToken) *errors.RestErr {
+	err := at.Validate()
+	if err != nil {
+		return err
+	}
+	return s.repository.Create(at)
+}
