@@ -45,3 +45,10 @@ func (s *service) Create(at AccessToken) *errors.RestErr {
 	}
 	return s.repository.Create(at)
 }
+func (s *service) UpdateExpirationTime(at AccessToken) *errors.RestErr {
+	err := at.Validate()
+	if err != nil {
+		return err
+	}
+	return s.repository.UpdateExpirationTime(at)
+}
