@@ -17,5 +17,5 @@ func NewRepository() DbRepository {
 }
 
 func (db *dbRepository) GetById(id string) (*access_token.AccessToken, *errors.RestErr) {
-	return nil, nil
+	return nil, errors.NewInternalServerError("data base connection is not implemented !")
 }

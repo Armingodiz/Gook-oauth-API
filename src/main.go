@@ -1,7 +1,7 @@
-package src
+package main
 
 import "github.com/ArminGodiz/Gook-oauth-API/src/app"
 
-func main()  {
+func main() {
 	app.StartApplication()
 }
