@@ -1,4 +1,4 @@
-module github.com/ArminGodiz/Gook-oauth-API/src
+module github.com/ArminGodiz/Gook-oauth-API
 
 go 1.13
 
