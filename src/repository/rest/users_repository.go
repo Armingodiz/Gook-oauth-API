@@ -2,6 +2,7 @@ package rest
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ArminGodiz/Gook-oauth-API/src/domain/users"
 	"github.com/ArminGodiz/Gook-oauth-API/src/utils/errors"
 	"github.com/go-resty/resty/v2"
@@ -14,7 +15,7 @@ type restUsersRepository struct {
 }
 
 var (
-	restyClient     = resty.New()
+	restyClient = resty.New()
 )
 
 func NewRepository() RestUsersRepository {
@@ -27,9 +28,9 @@ func (ur *restUsersRepository) LoginUser(email, password string) (*users.User, *
 		SetBody(users.LoginRequest{Email: email, Password: password}).
 		SetResult(&users.User{}). // or SetResult(AuthSuccess{}).
 		SetError(&errors.RestErr{}). // or SetError(AuthError{}).
-		Post("localhost:1111/users/login")
+		Post("http://localhost:1111/users/login")
 	if err != nil {
-		return nil, errors.NewInternalServerError("error while sending post request for login ")
+		return nil, errors.NewInternalServerError("error while sending post request for login :     " + err.Error())
 	}
 	if resp == nil || resp.RawResponse == nil {
 		return nil, errors.NewInternalServerError("INVALID email or password for login !")
@@ -37,8 +38,9 @@ func (ur *restUsersRepository) LoginUser(email, password string) (*users.User, *
 	if resp.StatusCode() > 299 { // we have an error
 		var restErr errors.RestErr
 		err := json.Unmarshal(resp.Body(), &restErr)
+		fmt.Println(resp.String())
 		if err != nil { // we get a different type of error
-			return nil, errors.NewInternalServerError("Unknown error type accrued while trying to login ")
+			return nil, errors.NewInternalServerError("Unknown error type accrued while trying to login ==>" + err.Error())
 		}
 		return nil, &restErr
 	}

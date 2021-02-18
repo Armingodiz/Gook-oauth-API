@@ -39,7 +39,7 @@ func (db *dbRepository) Create(at access_token.AccessToken) *errors.RestErr {
 	}
 	err = redis_db.DB.HSet(context.Background(), "tokens", at.AccessToken, json1).Err()
 	if err != nil {
-		return errors.NewInternalServerError("error while saving in db")
+		return errors.NewInternalServerError("error while saving in db" + err.Error())
 	}
 	return nil
 }
