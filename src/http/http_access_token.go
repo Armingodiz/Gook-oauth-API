@@ -2,6 +2,8 @@ package http
 
 import (
 	"github.com/ArminGodiz/Gook-oauth-API/src/domain/access_token"
+	"github.com/ArminGodiz/Gook-oauth-API/src/services"
+	"github.com/ArminGodiz/Gook-oauth-API/src/utils/errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,10 +13,10 @@ type AccessTokenHandler interface {
 	Create(*gin.Context)
 }
 type accessTokenHandler struct {
-	service access_token.Service
+	service services.Service
 }
 
-func NewHandler(service access_token.Service) AccessTokenHandler {
+func NewHandler(service services.Service) AccessTokenHandler {
 	return &accessTokenHandler{
 		service: service,
 	}
@@ -31,16 +33,17 @@ func (ath *accessTokenHandler) GetById(c *gin.Context) {
 }
 
 func (ath *accessTokenHandler) Create(c *gin.Context) {
-	var at access_token.AccessToken
-	err := c.ShouldBindJSON(&at)
+	var request access_token.AccessTokenRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		restErr := errors.NewBadRequestError("invalid json body")
+		c.JSON(restErr.Code, restErr)
+		return
+	}
+
+	accessToken, err := ath.service.Create(request)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		c.JSON(err.Code, err)
 		return
 	}
-	err2 := ath.service.Create(at)
-	if err2 != nil {
-		c.JSON(err2.Code, err2)
-		return
-	}
-	c.JSON(http.StatusCreated, at)
+	c.JSON(http.StatusCreated, accessToken)
 }

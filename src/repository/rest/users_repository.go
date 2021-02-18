@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"github.com/ArminGodiz/Gook-oauth-API/src/domain/users"
 	"github.com/ArminGodiz/Gook-oauth-API/src/utils/errors"
-	"github.com/go-resty/resty"
-	"github.com/golang-restclient/rest"
-	"time"
+	"github.com/go-resty/resty/v2"
 )
 
 type RestUsersRepository interface {
@@ -17,10 +15,6 @@ type restUsersRepository struct {
 
 var (
 	restyClient     = resty.New()
-	UsersRestClient = rest.RequestBuilder{
-		BaseURL: "localhost:1111", // ** the port which users api is listening on **
-		Timeout: 2 * time.Second,
-	}
 )
 
 func NewRepository() RestUsersRepository {

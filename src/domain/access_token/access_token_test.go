@@ -7,13 +7,13 @@ import (
 )
 
 func TestGetNewAccessToken(t *testing.T) {
-	at := GetNewAccessToken()
+	at := GetNewAccessToken(1)
 	assert.False(t, at.IsExpired(), "new access token should not be expired !")
 	assert.EqualValues(t, "", at.AccessToken, "new access token should have empty access token value ")
-	assert.True(t, at.UserID == 0, "new access token cant have user id ")
+	//assert.True(t, at.UserID == 0, "new access token cant have user id ")
 }
 func TestAccessToken_IsExpired(t *testing.T) {
-	at := GetNewAccessToken()
+	at := GetNewAccessToken(1)
 	if at.IsExpired() {
 		t.Error("new access token must not be expired")
 
