@@ -1,3 +1,5 @@
+# this is image making approach , in this approach we need to make sure that we have redis container up and running too in the specified ipaddres .
+# using docker network or docker compose is a better choice for multi container applications like this .
 # starting from base image 1.13.8
 FROM golang:1.13
 
