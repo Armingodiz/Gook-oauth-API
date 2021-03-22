@@ -20,3 +20,13 @@ EXPOSE 2222
 # running the binary file
 
 CMD ["./outh-api"]
+# in this way size of our image will be inefficent we can replace line 14  :
+# putting binary file in first layer
+# RUN CGO_ENABLED=0 GDOS=linux go build -a -installsuffix cgo -o outh-api .
+# FROM alpine:latest
+# RUN apk --no-cashe add ca-certificates
+# WORKDIR /root/
+# using first layer (0) to create image with alpine base layer
+# COPY --from=0 /src/app .
+# CMD ["./outh-api"]
+# this approach causes alpine to be base image insted of golang which hase much smaller size

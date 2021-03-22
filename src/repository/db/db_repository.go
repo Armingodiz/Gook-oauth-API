@@ -25,7 +25,7 @@ func NewRepository() DbRepository {
 func (db *dbRepository) GetById(accessTokenID string) (*access_token.AccessToken, *errors.RestErr) {
 	at, err := redis_db.DB.HGet(context.Background(), "tokens", accessTokenID).Result()
 	if err != nil {
-		return nil, errors.NewInternalServerError("no access token found !")
+		return nil, errors.NewInternalServerError("no access token found !" + err.Error())
 	}
 	fmt.Println(at)
 	var accessToken access_token.AccessToken
